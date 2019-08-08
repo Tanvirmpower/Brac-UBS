@@ -140,7 +140,6 @@ angular.module('bahmni.registration')
                 };
 
                 var createVisit = function (patientProfileData, forwardUrl) {
-                    debugger;
                     if (isEmptyVisitLocation()) {
                         $state.go('patient.edit', {patientUuid: $scope.patient.uuid}).then(function () {
                             messagingService.showMessage("error", "NO_LOCATION_TAGGED_TO_VISIT_LOCATION");

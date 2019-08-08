@@ -37,7 +37,6 @@ angular.module('bahmni.common.patientSearch')
             }
         };
         var getPatientCount = function (searchType) {
-            debugger;
             if (searchType.handler) {
                 var params = { q: searchType.handler, v: "full",
                     location_uuid: $bahmniCookieStore.get(Bahmni.Common.Constants.locationCookieName).uuid,
@@ -46,11 +45,31 @@ angular.module('bahmni.common.patientSearch')
                     params["additionalParams"] = searchType.additionalParams;
                 }
                 patientService.findPatients(params).then(function (response) {
+                    var count = 0;
                     searchType.patientCount = response.data.length;
-                    if ($scope.search.isSelectedSearch(searchType)) {
-                        $scope.search.updatePatientList(response.data);
-                    }
+                    angular.forEach(response.data, function (value, key) {
+                        patientService.getPatient(value.uuid).then(function (result) {
+                            count++;
+                            $scope.patientDetails = result.data.person.attributes;
+                            angular.forEach(response.data, function (value, key) {
+                                if (value.uuid == result.data.person.uuid) {
+                                    value.patientAttributes = $scope.patientDetails;
+                                }
+                            });
+                            if (count == searchType.patientCount) {
+                                if ($scope.search.isSelectedSearch(searchType)) {
+                                    $scope.search.updatePatientList(response.data);
+                                }
+                            }
+                        });
+                    });
                 });
+            }
+        };
+
+        $scope.filteringAttributes = function (item) {
+            if (item.attributeType.display == "Token") {
+                return item;
             }
         };
 
@@ -122,7 +141,6 @@ angular.module('bahmni.common.patientSearch')
         };
 
         $scope.forwardPatient = function (patient, heading) {
-            debugger
             var options = $.extend({}, $stateParams);
             $rootScope.patientAdmitLocationStatus = patient.Status;
             $.extend(options, {

@@ -136,44 +136,43 @@ angular.module('authentication')
             }
             userService.getUser(currentUser).then(function (data) {
                 userService.getProviderForUser(data.results[0].uuid).then(function (providers) {
-                        if (!_.isEmpty(providers.results) && hasAnyActiveProvider(providers.results)) {
-                            console.log("Printing User Information");
-                            console.log(data.results[0]);
-                            $rootScope.currentUser = new Bahmni.Auth.User(data.results[0]);
-                            console.log("Printing After visiting User Class");
-                            console.log($rootScope.currentUser);
-                            var i = 0;
-                            for (i = 0; i < $rootScope.currentUser.privileges.length; i++) {
-                                if ($rootScope.currentUser.privileges[i].name == "View Doctor Forms") {
-                                    $rootScope.currentUser.favouriteObsTemplates[0] = "History and Examination";
-                                    $rootScope.currentUser.favouriteObsTemplates[1] = "Vitals";
-                                    console.log($rootScope.currentUser.privileges[i].name);
-                                }
-                                if ($rootScope.currentUser.privileges[i].name == "View MidWife Forms") {
-                                    $rootScope.currentUser.favouriteObsTemplates[0] = "Vitals";
-                                    $rootScope.currentUser.favouriteObsTemplates[1] = "ANC";
-                                    $rootScope.currentUser.favouriteObsTemplates[2] = "ANC Service";
-                                    $rootScope.currentUser.favouriteObsTemplates[3] = "PNC";
-                                    $rootScope.currentUser.favouriteObsTemplates[4] = "PNC Service";
-                                    $rootScope.currentUser.favouriteObsTemplates[5] = "Delivery Service";
-                                    $rootScope.currentUser.favouriteObsTemplates[6] = "Delivery note";
-                                    $rootScope.currentUser.favouriteObsTemplates[7] = "Family Planning Template";
-                                    $rootScope.currentUser.favouriteObsTemplates[8] = "Family Planning Service";
-                                    console.log($rootScope.currentUser.privileges[i].name);
-                                }
-                                if ($rootScope.currentUser.privileges[i].name == "View Paramedic Forms") {
-                                    $rootScope.currentUser.favouriteObsTemplates[0] = "Child Vaccination Form";
-                                    console.log($rootScope.currentUser.privileges[i].name);
-                                }
+                    if (!_.isEmpty(providers.results) && hasAnyActiveProvider(providers.results)) {
+                        console.log("Printing User Information");
+                        console.log(data.results[0]);
+                        $rootScope.currentUser = new Bahmni.Auth.User(data.results[0]);
+                        console.log("Printing After visiting User Class");
+                        console.log($rootScope.currentUser);
+                        var i = 0;
+                        for (i = 0; i < $rootScope.currentUser.privileges.length; i++) {
+                            if ($rootScope.currentUser.privileges[i].name == "View Doctor Forms") {
+                                $rootScope.currentUser.favouriteObsTemplates[0] = "History and Examination";
+                                $rootScope.currentUser.favouriteObsTemplates[1] = "Vitals";
+                                console.log($rootScope.currentUser.privileges[i].name);
                             }
-                            $rootScope.currentUser.currentLocation = $bahmniCookieStore.get(Bahmni.Common.Constants.locationCookieName).name;
-                            $rootScope.$broadcast('event:user-credentialsLoaded', data.results[0]);
-                            deferrable.resolve(data.results[0]);
-                        } else {
-                            self.destroy();
-                            deferrable.reject("YOU_HAVE_NOT_BEEN_SETUP_PROVIDER");
+                            if ($rootScope.currentUser.privileges[i].name == "View MidWife Forms") {
+                                $rootScope.currentUser.favouriteObsTemplates[0] = "Vitals";
+                                $rootScope.currentUser.favouriteObsTemplates[1] = "ANC";
+                                $rootScope.currentUser.favouriteObsTemplates[2] = "ANC Service";
+                                $rootScope.currentUser.favouriteObsTemplates[3] = "PNC";
+                                $rootScope.currentUser.favouriteObsTemplates[4] = "PNC Service";
+                                $rootScope.currentUser.favouriteObsTemplates[5] = "Delivery Service";
+                                $rootScope.currentUser.favouriteObsTemplates[6] = "Delivery note";
+                                $rootScope.currentUser.favouriteObsTemplates[7] = "Family Planning Template";
+                                $rootScope.currentUser.favouriteObsTemplates[8] = "Family Planning Service";
+                                console.log($rootScope.currentUser.privileges[i].name);
+                            }
+                            if ($rootScope.currentUser.privileges[i].name == "View Paramedic Forms") {
+                                $rootScope.currentUser.favouriteObsTemplates[0] = "Child Vaccination Form";
+                                console.log($rootScope.currentUser.privileges[i].name);
+                            }
                         }
-                    },
+                        $rootScope.currentUser.currentLocation = $bahmniCookieStore.get(Bahmni.Common.Constants.locationCookieName).name;
+                        $rootScope.$broadcast('event:user-credentialsLoaded', data.results[0]);
+                        deferrable.resolve(data.results[0]);
+                    } else {
+                        self.destroy();
+                        deferrable.reject("YOU_HAVE_NOT_BEEN_SETUP_PROVIDER");
+                    } },
                     function () {
                         self.destroy();
                         deferrable.reject("COULD_NOT_GET_PROVIDER");

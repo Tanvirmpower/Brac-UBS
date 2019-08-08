@@ -4,7 +4,6 @@ angular.module('bahmni.common.domain')
     .service('encounterService', ['$http', '$q', '$rootScope', 'configurations', '$bahmniCookieStore',
         function ($http, $q, $rootScope, configurations, $bahmniCookieStore) {
             this.buildEncounter = function (encounter) {
-                debugger;
                 encounter.observations = encounter.observations || [];
                 encounter.observations.forEach(function (obs) {
                     stripExtraConceptInfo(obs);

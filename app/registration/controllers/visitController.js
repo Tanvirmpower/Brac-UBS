@@ -53,7 +53,6 @@ angular.module('bahmni.registration')
                         $scope.conceptSets = $scope.conceptSets.concat($scope.observationForms);
 
                         $scope.availableConceptSets = $scope.conceptSets.filter(function (conceptSet) {
-                            debugger;
                             return conceptSet.isAvailable($scope.context);
                         });
                         deferred.resolve(response.data);
@@ -74,7 +73,6 @@ angular.module('bahmni.registration')
             };
 
             var save = function () {
-                debugger;
                 $scope.encounter = {
                     patientUuid: $scope.patient.uuid,
                     locationUuid: locationUuid,
@@ -83,7 +81,7 @@ angular.module('bahmni.registration')
                     drugOrders: [],
                     extensions: {}
                 };
-                $scope.mappingAttributeBeforeUpdatePatient();
+                // $scope.mappingAttributeBeforeUpdatePatient();
                 $scope.encounter.providers = [];
                 $scope.encounter.providers.push({"uuid": $scope.patientAtributes.doctorId});
 
@@ -189,6 +187,11 @@ angular.module('bahmni.registration')
                 var allowContextChange = contxChange["allow"];
                 var errorMessage;
                 if (!isObservationFormValid()) {
+                    deferred.reject("Some fields are not valid");
+                    return deferred.promise;
+                }
+                if (!$scope.patientAtributes.doctorId && !$scope.patientAtributes.tokenNo) {
+                    messagingService.showMessage('error', "Please enter data in the mandatory Field");
                     deferred.reject("Some fields are not valid");
                     return deferred.promise;
                 }
@@ -306,11 +309,11 @@ angular.module('bahmni.registration')
                 var today = new Date();
                 var expiresValue = new Date(today);
                 expiresValue.setDate(today.getDate() + 1);
-                expiresValue.setHours( 0,1,0,0 );
+                expiresValue.setHours(0, 1, 0, 0);
                 var tokenNumber = $bahmniCookieStore.get('tokenNumberGenerateForPatient');
                 if (!tokenNumber) {
                     var serialNumber = 1;
-                    $scope.patientAtributes.tokenNo = serialNumber;
+                    $scope.patientAtributes.tokenNo = (serialNumber < 10 ? '0' + serialNumber : serialNumber);
                     $bahmniCookieStore.put('tokenNumberGenerateForPatient', serialNumber, {
                         path: '/',
                         expires: expiresValue
@@ -318,7 +321,7 @@ angular.module('bahmni.registration')
                 }
                 else {
                     var serialNumber = tokenNumber + 1;
-                    $scope.patientAtributes.tokenNo = serialNumber;
+                    $scope.patientAtributes.tokenNo = (serialNumber < 10 ? '0' + serialNumber : serialNumber);
                     $bahmniCookieStore.put('tokenNumberGenerateForPatient', serialNumber, {
                         path: '/',
                         expires: expiresValue
@@ -366,11 +369,10 @@ angular.module('bahmni.registration')
                 return data.formUuid;
             };
             var loadProviders = function () {
-            debugger;
                 visitService.loadProviders().then(function (data) {
                     var providerList = data.data.results;
                     $scope.filteredProviderList = providerList.filter(provider => provider.display != null && provider.display != "");
-                })
+                });
             };
 
             var addFormObservations = function (observations) {

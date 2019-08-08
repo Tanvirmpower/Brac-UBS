@@ -385,7 +385,6 @@ angular.module('bahmni.clinical').controller('ConsultationController',
             };
 
             $scope.closeVisitIfDischarged = function () {
-                debugger;
                 visitService.getVisitSummary($scope.visitHistory.activeVisit.uuid).then(function (response) {
                     var visitSummary = response.data;
                     if (visitSummary.admissionDetails && !visitSummary.dischargeDetails) {

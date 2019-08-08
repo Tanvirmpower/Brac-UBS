@@ -16,7 +16,6 @@ Bahmni.Common.PatientSearch.Search = function (searchTypes) {
     });
 
     self.switchSearchType = function (searchType) {
-        debugger;
         self.noResultsMessage = null;
         if (!self.isSelectedSearch(searchType)) {
             self.searchParameter = '';
